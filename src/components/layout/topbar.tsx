@@ -1,0 +1,33 @@
+import { IconMenu } from "@/components/ui/icons";
+
+interface TopbarProps {
+  onMenuClick: () => void;
+}
+
+export function Topbar({ onMenuClick }: TopbarProps) {
+  return (
+    <header className="flex h-16 shrink-0 items-center justify-between border-b border-border bg-surface px-4 sm:px-6">
+      <button
+        type="button"
+        onClick={onMenuClick}
+        aria-label="Open menu"
+        aria-controls="dashboard-sidebar"
+        className="rounded-md p-1.5 text-muted hover:bg-surface-hover lg:hidden"
+      >
+        <IconMenu className="h-5 w-5" />
+      </button>
+
+      <div className="hidden lg:block" />
+
+      <div className="flex items-center gap-3">
+        <div
+          className="flex h-8 w-8 items-center justify-center rounded-full bg-accent text-xs font-semibold text-accent-foreground"
+          aria-hidden="true"
+        >
+          TS
+        </div>
+        <span className="hidden text-sm font-medium sm:inline">TLB Studio</span>
+      </div>
+    </header>
+  );
+}

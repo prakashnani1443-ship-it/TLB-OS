@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+/* TLB brand palette — the only hues used anywhere in the app.
+   Every other state (hover/border/muted) is an opacity variant of one
+   of these five, so light/dark mode never needs a new color. */
+:root {
+  --tlb-ink: #0b0f14;
+  --tlb-white: #ffffff;
+  --tlb-teal: #00c2d1;
+  --tlb-light-gray: #f5f5f5;
+  --tlb-dark-gray: #1f1f1f;
+
+  /* Semantic tokens — light mode default */
+  --color-background: var(--tlb-light-gray);
+  --color-foreground: var(--tlb-ink);
+  --color-surface: var(--tlb-white);
+  --color-surface-hover: color-mix(in srgb, var(--tlb-ink) 5%, transparent);
+  --color-border: color-mix(in srgb, var(--tlb-ink) 10%, transparent);
+  --color-muted: color-mix(in srgb, var(--tlb-ink) 60%, transparent);
+  --color-accent: var(--tlb-teal);
+  /* Text/icon color placed ON TOP of the accent — ink-on-teal keeps
+     AAA contrast in both themes, so it never needs to change. */
+  --color-accent-foreground: var(--tlb-ink);
+  /* Focus ring must stay readable against --color-background in each
+     theme. Teal on light backgrounds fails WCAG contrast, so light
+     mode rings in ink and dark mode rings in teal instead. */
+  --color-ring: var(--tlb-ink);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: var(--tlb-ink);
+    --color-foreground: var(--tlb-white);
+    --color-surface: var(--tlb-dark-gray);
+    --color-surface-hover: color-mix(in srgb, var(--tlb-white) 6%, transparent);
+    --color-border: color-mix(in srgb, var(--tlb-white) 12%, transparent);
+    --color-muted: color-mix(in srgb, var(--tlb-white) 65%, transparent);
+    --color-accent: var(--tlb-teal);
+    --color-accent-foreground: var(--tlb-ink);
+    --color-ring: var(--tlb-teal);
+  }
+}
+
+@theme inline {
+  --color-background: var(--color-background);
+  --color-foreground: var(--color-foreground);
+  --color-surface: var(--color-surface);
+  --color-surface-hover: var(--color-surface-hover);
+  --color-border: var(--color-border);
+  --color-muted: var(--color-muted);
+  --color-accent: var(--color-accent);
+  --color-accent-foreground: var(--color-accent-foreground);
+  --font-sans: var(--font-sora);
+}
+
+body {
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Consistent, accessible focus visibility everywhere — buttons, links,
+   inputs — without relying on each component to opt in individually. */
+:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
