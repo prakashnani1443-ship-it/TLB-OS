@@ -2,41 +2,40 @@ import { StatCard } from "@/components/dashboard/stat-card";
 import { IconFolder, IconInbox, IconUpload, IconUsers } from "@/components/ui/icons";
 import { createClient } from "@/lib/supabase/server";
 
-async function getClientCount() {
+async function getCount(table: "clients" | "projects") {
   const supabase = await createClient();
   // RLS scopes this to the signed-in user's own rows — no manual
   // .eq("user_id", ...) filter needed.
-  const { count, error } = await supabase
-    .from("clients")
-    .select("*", { count: "exact", head: true });
+  const { count, error } = await supabase.from(table).select("*", { count: "exact", head: true });
 
   if (error) {
-    console.error("Failed to load client count:", error);
+    console.error(`Failed to load ${table} count:`, error);
     return { count: null, error: true as const };
   }
 
   return { count: count ?? 0, error: false as const };
 }
 
-// Active Projects / Tasks Due / Storage Used stay static placeholders —
-// those modules aren't built yet. Only Clients is wired to real data.
+// Tasks Due / Storage Used stay static placeholders — those modules
+// aren't built yet. Clients and Projects are wired to real data.
 export async function StatsGrid() {
-  const { count, error } = await getClientCount();
+  const [clients, projects] = await Promise.all([getCount("clients"), getCount("projects")]);
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
       <StatCard
-        label="Active Projects"
-        value="4"
+        label="Total Projects"
+        value={String(projects.count ?? 0)}
         hint="Across all clients"
         icon={<IconFolder className="h-5 w-5" />}
+        error={projects.error}
       />
       <StatCard
         label="Clients"
-        value={String(count ?? 0)}
+        value={String(clients.count ?? 0)}
         hint="Total clients"
         icon={<IconUsers className="h-5 w-5" />}
-        error={error}
+        error={clients.error}
       />
       <StatCard
         label="Tasks Due"
