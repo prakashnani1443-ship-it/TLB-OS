@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { IconUsers } from "@/components/ui/icons";
 import { EditClientButton } from "@/components/clients/edit-client-button";
+import { DeleteClientButton } from "@/components/clients/delete-client-button";
 import { createClient } from "@/lib/supabase/server";
 
 export async function ClientsList() {
@@ -60,6 +61,7 @@ export async function ClientsList() {
                   {client.status}
                 </span>
                 <EditClientButton client={client} />
+                <DeleteClientButton client={client} />
               </div>
             </li>
           ))}
