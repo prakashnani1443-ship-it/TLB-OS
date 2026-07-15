@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { IconUsers } from "@/components/ui/icons";
+import { EditClientButton } from "@/components/clients/edit-client-button";
 import { createClient } from "@/lib/supabase/server";
 
 export async function ClientsList() {
@@ -8,7 +9,7 @@ export async function ClientsList() {
   // RLS scopes this to the signed-in user's own rows.
   const { data: clients, error } = await supabase
     .from("clients")
-    .select("id, name, company, phone, email, status, created_at")
+    .select("id, name, company, phone, email, address, notes, status, created_at")
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -54,9 +55,12 @@ export async function ClientsList() {
                     "No additional details"}
                 </p>
               </div>
-              <span className="shrink-0 rounded-full bg-surface-hover px-2.5 py-1 text-xs font-medium text-muted">
-                {client.status}
-              </span>
+              <div className="flex shrink-0 items-center gap-2">
+                <span className="rounded-full bg-surface-hover px-2.5 py-1 text-xs font-medium text-muted">
+                  {client.status}
+                </span>
+                <EditClientButton client={client} />
+              </div>
             </li>
           ))}
         </ul>
