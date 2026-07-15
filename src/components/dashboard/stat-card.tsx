@@ -6,9 +6,11 @@ interface StatCardProps {
   value: string;
   hint?: string;
   icon: ReactNode;
+  /** Set when the value couldn't be loaded — shows a fallback instead of a stale/fake number. */
+  error?: boolean;
 }
 
-export function StatCard({ label, value, hint, icon }: StatCardProps) {
+export function StatCard({ label, value, hint, icon, error }: StatCardProps) {
   return (
     <Card className="p-5">
       <div className="flex items-start justify-between">
@@ -17,8 +19,14 @@ export function StatCard({ label, value, hint, icon }: StatCardProps) {
           {icon}
         </div>
       </div>
-      <p className="mt-3 text-2xl font-semibold tracking-tight text-foreground">{value}</p>
-      {hint && <p className="mt-1 text-xs text-muted">{hint}</p>}
+      <p className="mt-3 text-2xl font-semibold tracking-tight text-foreground">
+        {error ? "—" : value}
+      </p>
+      {error ? (
+        <p className="mt-1 text-xs text-danger">Couldn&apos;t load</p>
+      ) : (
+        hint && <p className="mt-1 text-xs text-muted">{hint}</p>
+      )}
     </Card>
   );
 }
