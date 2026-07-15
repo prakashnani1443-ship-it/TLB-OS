@@ -16,10 +16,38 @@ async function getCount(table: "clients" | "projects") {
   return { count: count ?? 0, error: false as const };
 }
 
-// Tasks Due / Storage Used stay static placeholders — those modules
-// aren't built yet. Clients and Projects are wired to real data.
+// "Due" = not completed and due within the next 7 days — this also
+// naturally includes anything already overdue (due_date in the past
+// still satisfies <= 7-days-from-now).
+async function getTasksDueCount() {
+  const supabase = await createClient();
+  const sevenDaysFromNow = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+    .toISOString()
+    .slice(0, 10);
+
+  const { count, error } = await supabase
+    .from("tasks")
+    .select("*", { count: "exact", head: true })
+    .neq("status", "completed")
+    .not("due_date", "is", null)
+    .lte("due_date", sevenDaysFromNow);
+
+  if (error) {
+    console.error("Failed to load tasks due count:", error);
+    return { count: null, error: true as const };
+  }
+
+  return { count: count ?? 0, error: false as const };
+}
+
+// Storage Used stays a static placeholder — that's a hosting/infra
+// concern, not a module with its own table.
 export async function StatsGrid() {
-  const [clients, projects] = await Promise.all([getCount("clients"), getCount("projects")]);
+  const [clients, projects, tasksDue] = await Promise.all([
+    getCount("clients"),
+    getCount("projects"),
+    getTasksDueCount(),
+  ]);
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -39,9 +67,10 @@ export async function StatsGrid() {
       />
       <StatCard
         label="Tasks Due"
-        value="7"
+        value={String(tasksDue.count ?? 0)}
         hint="Next 7 days"
         icon={<IconInbox className="h-5 w-5" />}
+        error={tasksDue.error}
       />
       <StatCard
         label="Storage Used"

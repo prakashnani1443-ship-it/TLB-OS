@@ -1,8 +1,8 @@
 // Hand-written to match supabase/migrations/0001_create_clients.sql,
 // 0002_add_client_address_notes.sql, 0003_grant_client_privileges.sql,
-// and 0004_create_projects.sql. Once the Supabase CLI is linked to the
-// project, prefer regenerating this from the live schema instead of
-// hand-editing further:
+// 0004_create_projects.sql, and 0005_create_tasks.sql. Once the
+// Supabase CLI is linked to the project, prefer regenerating this from
+// the live schema instead of hand-editing further:
 //   npx supabase gen types typescript --project-id <id> > src/types/database.ts
 export type Database = {
   public: {
@@ -84,6 +84,45 @@ export type Database = {
           due_date?: string | null;
           budget?: number | null;
           notes?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      tasks: {
+        Row: {
+          id: string;
+          user_id: string;
+          client_id: string | null;
+          project_id: string | null;
+          title: string;
+          description: string | null;
+          priority: string;
+          status: string;
+          due_date: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id?: string;
+          client_id?: string | null;
+          project_id?: string | null;
+          title: string;
+          description?: string | null;
+          priority?: string;
+          status?: string;
+          due_date?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          client_id?: string | null;
+          project_id?: string | null;
+          title?: string;
+          description?: string | null;
+          priority?: string;
+          status?: string;
+          due_date?: string | null;
           created_at?: string;
         };
         Relationships: [];

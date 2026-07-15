@@ -4,12 +4,20 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { dashboardNav, siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
-import { IconClose, IconFolder, IconHome, IconSettings, IconUsers } from "@/components/ui/icons";
+import {
+  IconClose,
+  IconFolder,
+  IconHome,
+  IconInbox,
+  IconSettings,
+  IconUsers,
+} from "@/components/ui/icons";
 
 const iconMap = {
   home: IconHome,
   folder: IconFolder,
   users: IconUsers,
+  inbox: IconInbox,
   settings: IconSettings,
 };
 
