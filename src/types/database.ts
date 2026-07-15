@@ -1,6 +1,7 @@
-// Hand-written to match supabase/migrations/0001_create_clients.sql.
-// Once the Supabase CLI is linked to the project, prefer regenerating
-// this from the live schema instead of hand-editing further:
+// Hand-written to match supabase/migrations/0001_create_clients.sql and
+// 0002_add_client_address_notes.sql. Once the Supabase CLI is linked to
+// the project, prefer regenerating this from the live schema instead of
+// hand-editing further:
 //   npx supabase gen types typescript --project-id <id> > src/types/database.ts
 export type Database = {
   public: {
@@ -13,6 +14,8 @@ export type Database = {
           email: string | null;
           phone: string | null;
           company: string | null;
+          address: string | null;
+          notes: string | null;
           status: string;
           created_at: string;
         };
@@ -23,6 +26,8 @@ export type Database = {
           email?: string | null;
           phone?: string | null;
           company?: string | null;
+          address?: string | null;
+          notes?: string | null;
           status?: string;
           created_at?: string;
         };
@@ -33,6 +38,8 @@ export type Database = {
           email?: string | null;
           phone?: string | null;
           company?: string | null;
+          address?: string | null;
+          notes?: string | null;
           status?: string;
           created_at?: string;
         };
