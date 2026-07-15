@@ -9,6 +9,12 @@
   --tlb-teal: #00c2d1;
   --tlb-light-gray: #f5f5f5;
   --tlb-dark-gray: #1f1f1f;
+  /* The one deliberate exception to the 5-color rule: error/destructive
+     states need a color outside teal/ink/gray for usability (red = bad
+     is a near-universal convention users rely on). Scoped to toast/
+     error UI only — never used decoratively. Same value in both themes
+     since it's a solid chip, not a background tint. */
+  --tlb-danger: #dc2626;
 
   /* Semantic tokens — light mode default */
   --color-background: var(--tlb-light-gray);
@@ -21,6 +27,8 @@
   /* Text/icon color placed ON TOP of the accent — ink-on-teal keeps
      AAA contrast in both themes, so it never needs to change. */
   --color-accent-foreground: var(--tlb-ink);
+  --color-danger: var(--tlb-danger);
+  --color-danger-foreground: var(--tlb-white);
   /* Focus ring must stay readable against --color-background in each
      theme. Teal on light backgrounds fails WCAG contrast, so light
      mode rings in ink and dark mode rings in teal instead. */
@@ -50,6 +58,8 @@
   --color-muted: var(--color-muted);
   --color-accent: var(--color-accent);
   --color-accent-foreground: var(--color-accent-foreground);
+  --color-danger: var(--color-danger);
+  --color-danger-foreground: var(--color-danger-foreground);
   --font-sans: var(--font-sora);
 }
 
