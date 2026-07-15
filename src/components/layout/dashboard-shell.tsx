@@ -4,7 +4,12 @@ import { useEffect, useState, type ReactNode } from "react";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Topbar } from "@/components/layout/topbar";
 
-export function DashboardShell({ children }: { children: ReactNode }) {
+interface DashboardShellProps {
+  children: ReactNode;
+  userEmail: string;
+}
+
+export function DashboardShell({ children, userEmail }: DashboardShellProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   // Let Escape close the mobile drawer regardless of which element has focus.
@@ -21,7 +26,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
     <div className="flex min-h-dvh bg-background">
       <Sidebar open={mobileOpen} onClose={() => setMobileOpen(false)} />
       <div className="flex min-w-0 flex-1 flex-col">
-        <Topbar onMenuClick={() => setMobileOpen(true)} />
+        <Topbar onMenuClick={() => setMobileOpen(true)} userEmail={userEmail} />
         <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8">{children}</main>
       </div>
     </div>

@@ -1,10 +1,12 @@
+import { UserMenu } from "@/components/auth/user-menu";
 import { IconMenu } from "@/components/ui/icons";
 
 interface TopbarProps {
   onMenuClick: () => void;
+  userEmail: string;
 }
 
-export function Topbar({ onMenuClick }: TopbarProps) {
+export function Topbar({ onMenuClick, userEmail }: TopbarProps) {
   return (
     <header className="flex h-16 shrink-0 items-center justify-between border-b border-border bg-surface px-4 sm:px-6">
       <button
@@ -19,15 +21,7 @@ export function Topbar({ onMenuClick }: TopbarProps) {
 
       <div className="hidden lg:block" />
 
-      <div className="flex items-center gap-3">
-        <div
-          className="flex h-8 w-8 items-center justify-center rounded-full bg-accent text-xs font-semibold text-accent-foreground"
-          aria-hidden="true"
-        >
-          TS
-        </div>
-        <span className="hidden text-sm font-medium sm:inline">TLB Studio</span>
-      </div>
+      <UserMenu email={userEmail} />
     </header>
   );
 }
