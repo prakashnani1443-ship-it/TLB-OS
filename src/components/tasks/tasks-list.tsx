@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Select } from "@/components/ui/select";
@@ -115,7 +116,15 @@ export function TasksList({ tasks, clientOptions, projectOptions, error }: Tasks
                   : null;
 
                 return (
-                  <li key={task.id} className="flex items-center justify-between gap-4 px-5 py-4">
+                  <li
+                    key={task.id}
+                    className="relative flex items-center justify-between gap-4 px-5 py-4 transition-colors hover:bg-surface-hover"
+                  >
+                    <Link
+                      href={`/dashboard/tasks/${task.id}`}
+                      className="absolute inset-0"
+                      aria-label={`View ${task.title}`}
+                    />
                     <div className="min-w-0">
                       <p className="truncate text-sm font-medium text-foreground">{task.title}</p>
                       <p className="truncate text-xs text-muted">
@@ -123,7 +132,7 @@ export function TasksList({ tasks, clientOptions, projectOptions, error }: Tasks
                           "No additional details"}
                       </p>
                     </div>
-                    <div className="flex shrink-0 items-center gap-3">
+                    <div className="relative z-10 flex shrink-0 items-center gap-3">
                       {dueDateFormatted && (
                         <span
                           className={cn(

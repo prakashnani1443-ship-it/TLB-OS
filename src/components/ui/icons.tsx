@@ -126,6 +126,14 @@ export function IconTrash(props: IconProps) {
   );
 }
 
+export function IconCheck(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <path d="M20 6 9 17l-5-5" />
+    </svg>
+  );
+}
+
 export function IconInbox(props: IconProps) {
   return (
     <svg {...base(props)}>
