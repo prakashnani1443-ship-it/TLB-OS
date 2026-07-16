@@ -4,7 +4,9 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
+import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 import { IconInbox } from "@/components/ui/icons";
 import { EditTaskButton } from "@/components/tasks/edit-task-button";
 import { DeleteTaskButton } from "@/components/tasks/delete-task-button";
@@ -12,11 +14,32 @@ import { cn } from "@/lib/utils";
 import type { Task, ClientOption, ProjectOption } from "@/components/tasks/types";
 
 const priorityLabels: Record<string, string> = { low: "Low", medium: "Medium", high: "High" };
+const priorityRank: Record<string, number> = { low: 1, medium: 2, high: 3 };
 const statusLabels: Record<string, string> = {
   pending: "Pending",
   in_progress: "In Progress",
   completed: "Completed",
 };
+
+type SortOrder = "newest" | "oldest" | "due_asc" | "due_desc" | "priority_high" | "priority_low";
+type DueFilter = "all" | "overdue" | "today" | "due_soon" | "none";
+
+const DEFAULTS = {
+  search: "",
+  status: "all",
+  priority: "all",
+  client: "all",
+  project: "all",
+  due: "all" as DueFilter,
+  sort: "newest" as SortOrder,
+};
+
+function compareNullable(a: number | null, b: number | null, ascending: boolean) {
+  if (a === null && b === null) return 0;
+  if (a === null) return 1;
+  if (b === null) return -1;
+  return ascending ? a - b : b - a;
+}
 
 interface TasksListProps {
   tasks: Task[];
@@ -26,8 +49,13 @@ interface TasksListProps {
 }
 
 export function TasksList({ tasks, clientOptions, projectOptions, error }: TasksListProps) {
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [priorityFilter, setPriorityFilter] = useState("all");
+  const [search, setSearch] = useState(DEFAULTS.search);
+  const [statusFilter, setStatusFilter] = useState(DEFAULTS.status);
+  const [priorityFilter, setPriorityFilter] = useState(DEFAULTS.priority);
+  const [clientFilter, setClientFilter] = useState(DEFAULTS.client);
+  const [projectFilter, setProjectFilter] = useState(DEFAULTS.project);
+  const [dueFilter, setDueFilter] = useState<DueFilter>(DEFAULTS.due);
+  const [sortOrder, setSortOrder] = useState<SortOrder>(DEFAULTS.sort);
 
   const clientNameById = useMemo(
     () => new Map(clientOptions.map((client) => [client.id, client.name])),
@@ -38,16 +66,154 @@ export function TasksList({ tasks, clientOptions, projectOptions, error }: Tasks
     [projectOptions],
   );
 
-  const filteredTasks = tasks.filter((task) => {
-    if (statusFilter !== "all" && task.status !== statusFilter) return false;
-    if (priorityFilter !== "all" && task.priority !== priorityFilter) return false;
-    return true;
-  });
+  const isFiltered =
+    search.trim() !== "" ||
+    statusFilter !== DEFAULTS.status ||
+    priorityFilter !== DEFAULTS.priority ||
+    clientFilter !== DEFAULTS.client ||
+    projectFilter !== DEFAULTS.project ||
+    dueFilter !== DEFAULTS.due ||
+    sortOrder !== DEFAULTS.sort;
+
+  const filteredTasks = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    const today = new Date().toISOString().slice(0, 10);
+    const dueSoonCutoffDate = new Date();
+    dueSoonCutoffDate.setDate(dueSoonCutoffDate.getDate() + 7);
+    const sevenDaysFromNow = dueSoonCutoffDate.toISOString().slice(0, 10);
+
+    let result = tasks;
+
+    if (query) {
+      result = result.filter((task) => {
+        const clientName = task.client_id ? clientNameById.get(task.client_id) : null;
+        const projectName = task.project_id ? projectNameById.get(task.project_id) : null;
+        return [task.title, task.description, clientName, projectName].some((field) =>
+          field?.toLowerCase().includes(query),
+        );
+      });
+    }
+    if (statusFilter !== "all") {
+      result = result.filter((task) => task.status === statusFilter);
+    }
+    if (priorityFilter !== "all") {
+      result = result.filter((task) => task.priority === priorityFilter);
+    }
+    if (clientFilter !== "all") {
+      result = result.filter((task) => task.client_id === clientFilter);
+    }
+    if (projectFilter !== "all") {
+      result = result.filter((task) => task.project_id === projectFilter);
+    }
+    if (dueFilter === "overdue") {
+      result = result.filter(
+        (task) => task.due_date && task.due_date < today && task.status !== "completed",
+      );
+    } else if (dueFilter === "today") {
+      result = result.filter(
+        (task) => task.due_date === today && task.status !== "completed",
+      );
+    } else if (dueFilter === "due_soon") {
+      result = result.filter(
+        (task) =>
+          task.due_date &&
+          task.due_date > today &&
+          task.due_date <= sevenDaysFromNow &&
+          task.status !== "completed",
+      );
+    } else if (dueFilter === "none") {
+      result = result.filter((task) => !task.due_date);
+    }
+
+    return [...result].sort((a, b) => {
+      switch (sortOrder) {
+        case "newest":
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        case "oldest":
+          return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+        case "due_asc":
+          return compareNullable(
+            a.due_date ? new Date(a.due_date).getTime() : null,
+            b.due_date ? new Date(b.due_date).getTime() : null,
+            true,
+          );
+        case "due_desc":
+          return compareNullable(
+            a.due_date ? new Date(a.due_date).getTime() : null,
+            b.due_date ? new Date(b.due_date).getTime() : null,
+            false,
+          );
+        case "priority_high":
+          return (priorityRank[b.priority] ?? 0) - (priorityRank[a.priority] ?? 0);
+        case "priority_low":
+          return (priorityRank[a.priority] ?? 0) - (priorityRank[b.priority] ?? 0);
+        default:
+          return 0;
+      }
+    });
+  }, [
+    tasks,
+    search,
+    statusFilter,
+    priorityFilter,
+    clientFilter,
+    projectFilter,
+    dueFilter,
+    sortOrder,
+    clientNameById,
+    projectNameById,
+  ]);
+
+  function clearFilters() {
+    setSearch(DEFAULTS.search);
+    setStatusFilter(DEFAULTS.status);
+    setPriorityFilter(DEFAULTS.priority);
+    setClientFilter(DEFAULTS.client);
+    setProjectFilter(DEFAULTS.project);
+    setDueFilter(DEFAULTS.due);
+    setSortOrder(DEFAULTS.sort);
+  }
+
+  if (error) {
+    return (
+      <Card>
+        <CardContent>
+          <EmptyState
+            error
+            icon={<IconInbox className="h-5 w-5" />}
+            title="Couldn't load tasks"
+            description="Something went wrong fetching your tasks. Try refreshing the page."
+          />
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (tasks.length === 0) {
+    return (
+      <Card>
+        <CardContent>
+          <EmptyState
+            icon={<IconInbox className="h-5 w-5" />}
+            title="No tasks yet"
+            description="Add a task to start tracking it."
+          />
+        </CardContent>
+      </Card>
+    );
+  }
 
   const today = new Date().toISOString().slice(0, 10);
 
   return (
     <div className="flex flex-col gap-4">
+      <Input
+        value={search}
+        onChange={(event) => setSearch(event.target.value)}
+        placeholder="Search by title, description, client, or project"
+        aria-label="Search tasks"
+        className="w-full sm:max-w-xs"
+      />
       <div className="flex flex-wrap gap-3">
         <Select
           value={statusFilter}
@@ -71,30 +237,69 @@ export function TasksList({ tasks, clientOptions, projectOptions, error }: Tasks
           <option value="medium">Medium</option>
           <option value="high">High</option>
         </Select>
+        <Select
+          value={clientFilter}
+          onChange={(event) => setClientFilter(event.target.value)}
+          className="w-auto"
+          aria-label="Filter by client"
+        >
+          <option value="all">All Clients</option>
+          {clientOptions.map((client) => (
+            <option key={client.id} value={client.id}>
+              {client.name}
+            </option>
+          ))}
+        </Select>
+        <Select
+          value={projectFilter}
+          onChange={(event) => setProjectFilter(event.target.value)}
+          className="w-auto"
+          aria-label="Filter by project"
+        >
+          <option value="all">All Projects</option>
+          {projectOptions.map((project) => (
+            <option key={project.id} value={project.id}>
+              {project.name}
+            </option>
+          ))}
+        </Select>
+        <Select
+          value={dueFilter}
+          onChange={(event) => setDueFilter(event.target.value as DueFilter)}
+          className="w-auto"
+          aria-label="Filter by due date"
+        >
+          <option value="all">All Due Dates</option>
+          <option value="overdue">Overdue</option>
+          <option value="today">Due Today</option>
+          <option value="due_soon">Due Soon</option>
+          <option value="none">No Due Date</option>
+        </Select>
+        <Select
+          value={sortOrder}
+          onChange={(event) => setSortOrder(event.target.value as SortOrder)}
+          className="w-auto"
+          aria-label="Sort tasks"
+        >
+          <option value="newest">Newest</option>
+          <option value="oldest">Oldest</option>
+          <option value="due_asc">Due Date: Ascending</option>
+          <option value="due_desc">Due Date: Descending</option>
+          <option value="priority_high">Priority: High to Low</option>
+          <option value="priority_low">Priority: Low to High</option>
+        </Select>
+        <Button type="button" variant="ghost" onClick={clearFilters} disabled={!isFiltered}>
+          Clear Filters
+        </Button>
       </div>
 
-      {error ? (
-        <Card>
-          <CardContent>
-            <EmptyState
-              error
-              icon={<IconInbox className="h-5 w-5" />}
-              title="Couldn't load tasks"
-              description="Something went wrong fetching your tasks. Try refreshing the page."
-            />
-          </CardContent>
-        </Card>
-      ) : filteredTasks.length === 0 ? (
+      {filteredTasks.length === 0 ? (
         <Card>
           <CardContent>
             <EmptyState
               icon={<IconInbox className="h-5 w-5" />}
-              title={tasks.length === 0 ? "No tasks yet" : "No tasks match these filters"}
-              description={
-                tasks.length === 0
-                  ? "Add a task to start tracking it."
-                  : "Try a different status or priority."
-              }
+              title="No tasks match your filters"
+              description="Try a different search term, status, or priority."
             />
           </CardContent>
         </Card>
