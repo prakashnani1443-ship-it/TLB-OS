@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { IconFolder } from "@/components/ui/icons";
@@ -71,7 +72,15 @@ export function ProjectsList({ projects, clientOptions, error }: ProjectsListPro
               : null;
 
             return (
-              <li key={project.id} className="flex items-center justify-between gap-4 px-5 py-4">
+              <li
+                key={project.id}
+                className="relative flex items-center justify-between gap-4 px-5 py-4 transition-colors hover:bg-surface-hover"
+              >
+                <Link
+                  href={`/dashboard/projects/${project.id}`}
+                  className="absolute inset-0"
+                  aria-label={`View ${project.name}`}
+                />
                 <div className="min-w-0">
                   <p className="truncate text-sm font-medium text-foreground">{project.name}</p>
                   <p className="truncate text-xs text-muted">
@@ -80,7 +89,7 @@ export function ProjectsList({ projects, clientOptions, error }: ProjectsListPro
                       .join(" · ") || "No additional details"}
                   </p>
                 </div>
-                <div className="flex shrink-0 items-center gap-3">
+                <div className="relative z-10 flex shrink-0 items-center gap-3">
                   {project.budget !== null && (
                     <span className="text-sm text-muted">
                       {currencyFormatter.format(project.budget)}
