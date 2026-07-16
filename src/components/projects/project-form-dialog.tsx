@@ -18,6 +18,8 @@ interface ProjectFormDialogProps {
   /** Required when mode === "edit" — identifies the row to update. */
   project?: Project;
   clientOptions: ClientOption[];
+  /** Pre-selects a client in create mode (e.g. "Add project for this client"). */
+  defaultClientId?: string;
 }
 
 export function ProjectFormDialog({
@@ -26,6 +28,7 @@ export function ProjectFormDialog({
   mode,
   project,
   clientOptions,
+  defaultClientId,
 }: ProjectFormDialogProps) {
   const router = useRouter();
   const { showToast } = useToast();
@@ -104,7 +107,11 @@ export function ProjectFormDialog({
           <label htmlFor="project-client" className="text-sm font-medium text-foreground">
             Client
           </label>
-          <Select id="project-client" name="client_id" defaultValue={project?.client_id ?? ""}>
+          <Select
+            id="project-client"
+            name="client_id"
+            defaultValue={project?.client_id ?? defaultClientId ?? ""}
+          >
             <option value="">No client</option>
             {clientOptions.map((client) => (
               <option key={client.id} value={client.id}>

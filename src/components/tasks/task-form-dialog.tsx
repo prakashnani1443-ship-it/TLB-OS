@@ -19,6 +19,8 @@ interface TaskFormDialogProps {
   task?: Task;
   clientOptions: ClientOption[];
   projectOptions: ProjectOption[];
+  /** Pre-selects a client in create mode (e.g. "Add task for this client"). */
+  defaultClientId?: string;
 }
 
 export function TaskFormDialog({
@@ -28,6 +30,7 @@ export function TaskFormDialog({
   task,
   clientOptions,
   projectOptions,
+  defaultClientId,
 }: TaskFormDialogProps) {
   const router = useRouter();
   const { showToast } = useToast();
@@ -117,7 +120,11 @@ export function TaskFormDialog({
           <label htmlFor="task-client" className="text-sm font-medium text-foreground">
             Client
           </label>
-          <Select id="task-client" name="client_id" defaultValue={task?.client_id ?? ""}>
+          <Select
+            id="task-client"
+            name="client_id"
+            defaultValue={task?.client_id ?? defaultClientId ?? ""}
+          >
             <option value="">No client</option>
             {clientOptions.map((client) => (
               <option key={client.id} value={client.id}>

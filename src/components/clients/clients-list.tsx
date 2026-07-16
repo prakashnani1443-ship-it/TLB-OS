@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { IconUsers } from "@/components/ui/icons";
@@ -48,7 +49,18 @@ export async function ClientsList() {
       <CardContent className="p-0">
         <ul className="divide-y divide-border">
           {clients.map((client) => (
-            <li key={client.id} className="flex items-center justify-between gap-4 px-5 py-4">
+            <li
+              key={client.id}
+              className="relative flex items-center justify-between gap-4 px-5 py-4 transition-colors hover:bg-surface-hover"
+            >
+              {/* Stretched link covers the whole row; the action buttons
+                  below sit at z-10 so they keep their own clicks. Avoids
+                  nesting <button> inside <a> (invalid HTML). */}
+              <Link
+                href={`/dashboard/clients/${client.id}`}
+                className="absolute inset-0"
+                aria-label={`View ${client.name}`}
+              />
               <div className="min-w-0">
                 <p className="truncate text-sm font-medium text-foreground">{client.name}</p>
                 <p className="truncate text-xs text-muted">
@@ -56,7 +68,7 @@ export async function ClientsList() {
                     "No additional details"}
                 </p>
               </div>
-              <div className="flex shrink-0 items-center gap-2">
+              <div className="relative z-10 flex shrink-0 items-center gap-2">
                 <span className="rounded-full bg-surface-hover px-2.5 py-1 text-xs font-medium text-muted">
                   {client.status}
                 </span>
