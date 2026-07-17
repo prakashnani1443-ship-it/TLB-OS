@@ -70,7 +70,7 @@ export function Dialog({ open, onClose, title, children }: DialogProps) {
         className="relative z-10 w-full max-w-md rounded-xl border border-border bg-surface shadow-xl"
       >
         <div className="flex items-center justify-between border-b border-border p-4">
-          <h2 id="dialog-title" className="text-base font-semibold text-foreground">
+          <h2 id="dialog-title" className="font-heading text-base font-semibold text-foreground">
             {title}
           </h2>
           <button

@@ -60,11 +60,23 @@
   --color-accent-foreground: var(--color-accent-foreground);
   --color-danger: var(--color-danger);
   --color-danger-foreground: var(--color-danger-foreground);
-  --font-sans: var(--font-sora);
+  /* Two-font system: Inter for everything read as body/UI text (the
+     default), Space Grotesk only for headings/titles/large numbers via
+     the explicit font-heading utility below. */
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-space-grotesk);
 }
 
 body {
   font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Tailwind generates font-heading from --font-heading above; these two
+   properties aren't part of that utility, so they're added here once
+   instead of repeating tracking-tight/leading-tight on every heading. */
+.font-heading {
+  letter-spacing: -0.02em;
+  line-height: 1.15;
 }
 
 /* Consistent, accessible focus visibility everywhere — buttons, links,

@@ -49,7 +49,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
         )}
       >
         <div className="flex h-16 items-center justify-between px-5">
-          <Link href="/dashboard" className="flex items-center gap-2 font-semibold tracking-tight">
+          <Link href="/dashboard" className="font-heading flex items-center gap-2 font-semibold">
             <span className="h-2 w-2 rounded-full bg-accent" aria-hidden="true" />
             {siteConfig.name}
           </Link>

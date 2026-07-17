@@ -19,7 +19,7 @@ export function StatCard({ label, value, hint, icon, error }: StatCardProps) {
           {icon}
         </div>
       </div>
-      <p className="mt-3 text-2xl font-semibold tracking-tight text-foreground">
+      <p className="font-heading mt-3 text-2xl font-semibold text-foreground">
         {error ? "—" : value}
       </p>
       {error ? (

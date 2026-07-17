@@ -101,7 +101,7 @@ export default async function TaskDetailPage({
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-1">
         <div className="flex flex-wrap items-center gap-3">
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">{task.title}</h1>
+          <h1 className="font-heading text-2xl font-semibold text-foreground">{task.title}</h1>
           <span className="rounded-full bg-surface-hover px-2.5 py-1 text-xs font-medium text-muted">
             {statusLabels[task.status] ?? task.status}
           </span>
