@@ -57,6 +57,7 @@ export async function StatsGrid() {
         hint="Across all clients"
         icon={<IconFolder className="h-5 w-5" />}
         error={projects.error}
+        tone="teal"
       />
       <StatCard
         label="Clients"
@@ -64,6 +65,7 @@ export async function StatsGrid() {
         hint="Total clients"
         icon={<IconUsers className="h-5 w-5" />}
         error={clients.error}
+        tone="violet"
       />
       <StatCard
         label="Tasks Due"
@@ -71,12 +73,14 @@ export async function StatsGrid() {
         hint="Next 7 days"
         icon={<IconInbox className="h-5 w-5" />}
         error={tasksDue.error}
+        tone="teal"
       />
       <StatCard
         label="Storage Used"
         value="2.1 GB"
         hint="of 10 GB"
         icon={<IconUpload className="h-5 w-5" />}
+        tone="violet"
       />
     </div>
   );
