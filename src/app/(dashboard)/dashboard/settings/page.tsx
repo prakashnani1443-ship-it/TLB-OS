@@ -19,19 +19,19 @@ export default async function SettingsPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">Settings</h1>
+      <div className="border-b border-border pb-6">
+        <h1 className="font-heading text-2xl font-semibold text-foreground">Settings</h1>
         <p className="mt-1 text-sm text-muted">Account and workspace preferences.</p>
       </div>
 
-      <Card>
-        <CardHeader>
+      <Card className="glow-teal">
+        <CardHeader className="border-b border-border pb-4">
           <CardTitle>Profile</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-4">
             <div
-              className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-accent text-lg font-semibold text-accent-foreground"
+              className="font-heading flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-accent text-lg font-semibold text-accent-foreground"
               aria-hidden="true"
             >
               {initials}

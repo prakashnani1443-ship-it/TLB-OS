@@ -12,7 +12,12 @@ interface EmptyStateProps {
 
 export function EmptyState({ icon, title, description, action, error }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center gap-3 px-6 py-12 text-center">
+    <div
+      className={cn(
+        "flex flex-col items-center gap-3 rounded-lg px-6 py-12 text-center",
+        !error && "border border-dashed border-border",
+      )}
+    >
       <div
         className={cn(
           "flex h-12 w-12 items-center justify-center rounded-full",

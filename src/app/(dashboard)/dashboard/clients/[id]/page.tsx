@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { IconFolder, IconInbox, IconUsers } from "@/components/ui/icons";
+import { StatusBadge } from "@/components/ui/status-badge";
 import { ClientQuickActions } from "@/components/clients/client-quick-actions";
 import { ProjectsList } from "@/components/projects/projects-list";
 import { TasksList } from "@/components/tasks/tasks-list";
@@ -130,12 +131,10 @@ export default async function ClientDetailPage({
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-1 border-b border-border pb-6">
         <div className="flex flex-wrap items-center gap-3">
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">{client.name}</h1>
-          <span className="rounded-full bg-surface-hover px-2.5 py-1 text-xs font-medium text-muted">
-            {statusLabels[client.status] ?? client.status}
-          </span>
+          <h1 className="font-heading text-2xl font-semibold text-foreground">{client.name}</h1>
+          <StatusBadge status={client.status} label={statusLabels[client.status] ?? client.status} />
         </div>
         <p className="text-sm text-muted">Client since {createdDate}</p>
       </div>
@@ -169,18 +168,19 @@ export default async function ClientDetailPage({
       </Card>
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-5">
-        {summary.map((stat) => (
+        {summary.map((stat, index) => (
           <StatCard
             key={stat.label}
             label={stat.label}
             value={String(stat.value)}
             icon={<stat.icon className="h-5 w-5" />}
+            tone={index % 2 === 0 ? "teal" : "violet"}
           />
         ))}
       </div>
 
       <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-semibold tracking-tight text-foreground">Projects</h2>
+        <h2 className="font-heading text-lg font-semibold text-foreground">Projects</h2>
         <ProjectsList
           projects={projects}
           clientOptions={clientOptions}
@@ -189,7 +189,7 @@ export default async function ClientDetailPage({
       </section>
 
       <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-semibold tracking-tight text-foreground">Tasks</h2>
+        <h2 className="font-heading text-lg font-semibold text-foreground">Tasks</h2>
         <TasksList
           tasks={tasks}
           clientOptions={clientOptions}

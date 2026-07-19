@@ -49,7 +49,7 @@ export function SignupForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex w-full max-w-sm flex-col gap-4 p-6">
-      <h1 className="text-xl font-semibold">Create your TLB-OS account</h1>
+      <h1 className="font-heading text-xl font-semibold">Create your TLB-OS account</h1>
       <Input type="email" name="email" placeholder="Email" autoComplete="email" required />
       <Input
         type="password"

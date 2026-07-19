@@ -19,11 +19,11 @@ interface RecentProjectsProps {
 export function RecentProjects({ projects = [] }: RecentProjectsProps) {
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="border-b border-border pb-4">
         <CardTitle>Recent Projects</CardTitle>
         <Link
           href="/dashboard/projects"
-          className="flex items-center gap-1 text-sm text-muted hover:text-foreground"
+          className="flex items-center gap-1 text-sm text-muted transition-colors hover:text-accent"
         >
           View all
           <IconArrowRight className="h-4 w-4" />
@@ -39,12 +39,14 @@ export function RecentProjects({ projects = [] }: RecentProjectsProps) {
         ) : (
           <ul className="divide-y divide-border">
             {projects.map((project) => (
-              <li key={project.id} className="flex items-center justify-between py-3">
-                <div>
-                  <p className="text-sm font-medium text-foreground">{project.name}</p>
-                  <p className="text-xs text-muted">{project.client}</p>
+              <li key={project.id}>
+                <div className="flex items-center justify-between rounded-lg px-2 py-3 transition-colors hover:bg-surface-hover">
+                  <div>
+                    <p className="text-sm font-medium text-foreground">{project.name}</p>
+                    <p className="text-xs text-muted">{project.client}</p>
+                  </div>
+                  <span className="text-xs text-muted">{project.updatedAt}</span>
                 </div>
-                <span className="text-xs text-muted">{project.updatedAt}</span>
               </li>
             ))}
           </ul>

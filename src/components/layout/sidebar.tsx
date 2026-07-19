@@ -48,8 +48,8 @@ export function Sidebar({ open, onClose }: SidebarProps) {
           open ? "translate-x-0" : "-translate-x-full",
         )}
       >
-        <div className="flex h-16 items-center justify-between px-5">
-          <Link href="/dashboard" className="flex items-center gap-2 font-semibold tracking-tight">
+        <div className="flex h-16 items-center justify-between border-b border-border px-5">
+          <Link href="/dashboard" className="font-heading flex items-center gap-2 font-semibold">
             <span className="h-2 w-2 rounded-full bg-accent" aria-hidden="true" />
             {siteConfig.name}
           </Link>
@@ -63,7 +63,8 @@ export function Sidebar({ open, onClose }: SidebarProps) {
           </button>
         </div>
 
-        <nav className="flex flex-1 flex-col gap-1 px-3 py-2" aria-label="Dashboard navigation">
+        <nav className="flex flex-1 flex-col gap-1.5 px-3 py-4" aria-label="Dashboard navigation">
+          <p className="px-3 pb-2 text-xs font-medium uppercase tracking-wide text-muted">Menu</p>
           {dashboardNav.map((item) => {
             const Icon = iconMap[item.icon];
             const active = pathname === item.href;
@@ -74,12 +75,18 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                 onClick={onClose}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                  "relative flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
                   active
-                    ? "bg-accent text-accent-foreground"
+                    ? "bg-accent/10 text-accent"
                     : "text-foreground hover:bg-surface-hover",
                 )}
               >
+                {active && (
+                  <span
+                    className="absolute inset-y-1.5 left-0 w-0.5 rounded-full bg-accent"
+                    aria-hidden="true"
+                  />
+                )}
                 <Icon className="h-5 w-5" />
                 {item.label}
               </Link>

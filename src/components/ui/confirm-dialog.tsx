@@ -3,6 +3,7 @@
 import { type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
+import { IconAlertTriangle } from "@/components/ui/icons";
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -27,6 +28,11 @@ export function ConfirmDialog({
 }: ConfirmDialogProps) {
   return (
     <Dialog open={open} onClose={disabled ? () => {} : onClose} title={title}>
+      {destructive && (
+        <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-danger/10 text-danger">
+          <IconAlertTriangle className="h-5 w-5" />
+        </div>
+      )}
       <p className="text-sm text-muted">{description}</p>
       <div className="mt-6 flex justify-end gap-2">
         <Button type="button" variant="secondary" onClick={onClose} disabled={disabled}>

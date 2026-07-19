@@ -25,7 +25,7 @@ export default function ErrorBoundary({
         <IconAlertTriangle className="h-6 w-6" />
       </div>
       <div className="space-y-2">
-        <h1 className="text-xl font-semibold text-foreground sm:text-2xl">
+        <h1 className="font-heading text-xl font-semibold text-foreground sm:text-2xl">
           Something went wrong
         </h1>
         <p className="max-w-sm text-sm text-muted">

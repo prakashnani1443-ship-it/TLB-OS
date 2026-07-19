@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
@@ -42,15 +43,20 @@ export function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex w-full max-w-sm flex-col gap-4 p-6">
-      <h1 className="text-xl font-semibold">Log in to TLB-OS</h1>
+      <h1 className="font-heading text-xl font-semibold">Log in to TLB-OS</h1>
       <Input type="email" name="email" placeholder="Email" autoComplete="email" required />
-      <Input
-        type="password"
-        name="password"
-        placeholder="Password"
-        autoComplete="current-password"
-        required
-      />
+      <div className="flex flex-col gap-1.5">
+        <Input
+          type="password"
+          name="password"
+          placeholder="Password"
+          autoComplete="current-password"
+          required
+        />
+        <Link href="/forgot-password" className="self-end text-xs text-muted hover:text-accent">
+          Forgot password?
+        </Link>
+      </div>
       <Button type="submit" disabled={isSubmitting}>
         {isSubmitting ? "Logging in…" : "Log in"}
       </Button>

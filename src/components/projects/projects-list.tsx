@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { IconFolder } from "@/components/ui/icons";
+import { StatusBadge } from "@/components/ui/status-badge";
 import { EditProjectButton } from "@/components/projects/edit-project-button";
 import { DeleteProjectButton } from "@/components/projects/delete-project-button";
 import type { Project, ClientOption } from "@/components/projects/types";
@@ -182,7 +183,7 @@ export function ProjectsList({ projects, clientOptions, error }: ProjectsListPro
         aria-label="Search projects"
         className="w-full sm:max-w-xs"
       />
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3 rounded-xl border border-border bg-surface p-3">
         <Select
           value={statusFilter}
           onChange={(event) => setStatusFilter(event.target.value)}
@@ -289,9 +290,10 @@ export function ProjectsList({ projects, clientOptions, error }: ProjectsListPro
                           {currencyFormatter.format(project.budget)}
                         </span>
                       )}
-                      <span className="rounded-full bg-surface-hover px-2.5 py-1 text-xs font-medium text-muted">
-                        {statusLabels[project.status] ?? project.status}
-                      </span>
+                      <StatusBadge
+                        status={project.status}
+                        label={statusLabels[project.status] ?? project.status}
+                      />
                       <EditProjectButton project={project} clientOptions={clientOptions} />
                       <DeleteProjectButton project={project} />
                     </div>

@@ -15,6 +15,10 @@
      error UI only — never used decoratively. Same value in both themes
      since it's a solid chip, not a background tint. */
   --tlb-danger: #dc2626;
+  /* Second deliberate exception, per the approved TLB Neo-3D SaaS
+     direction: a violet counterpart to teal, used only as a soft
+     ambient glow alternating with teal on dashboard stat cards. */
+  --tlb-violet: #8b5cf6;
 
   /* Semantic tokens — light mode default */
   --color-background: var(--tlb-light-gray);
@@ -60,11 +64,64 @@
   --color-accent-foreground: var(--color-accent-foreground);
   --color-danger: var(--color-danger);
   --color-danger-foreground: var(--color-danger-foreground);
-  --font-sans: var(--font-sora);
+  /* Two-font system: Inter for everything read as body/UI text (the
+     default), Space Grotesk only for headings/titles/large numbers via
+     the explicit font-heading utility below. */
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-space-grotesk);
 }
 
 body {
   font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Tailwind generates font-heading from --font-heading above; these two
+   properties aren't part of that utility, so they're added here once
+   instead of repeating tracking-tight/leading-tight on every heading. */
+.font-heading {
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+/* Dashboard-only depth: a thin border (already on Card) plus a soft
+   ambient glow, teal or violet, that grows slightly on hover. Kept
+   subtle on purpose — no blur/transparency, so it never reads as
+   glassmorphism. */
+.glow-teal,
+.glow-violet {
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+.glow-teal {
+  box-shadow:
+    0 1px 2px color-mix(in srgb, var(--tlb-ink) 6%, transparent),
+    0 12px 28px -18px color-mix(in srgb, var(--tlb-teal) 35%, transparent);
+}
+.glow-violet {
+  box-shadow:
+    0 1px 2px color-mix(in srgb, var(--tlb-ink) 6%, transparent),
+    0 12px 28px -18px color-mix(in srgb, var(--tlb-violet) 35%, transparent);
+}
+.glow-teal:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 2px 4px color-mix(in srgb, var(--tlb-ink) 8%, transparent),
+    0 18px 36px -16px color-mix(in srgb, var(--tlb-teal) 45%, transparent);
+}
+.glow-violet:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 2px 4px color-mix(in srgb, var(--tlb-ink) 8%, transparent),
+    0 18px 36px -16px color-mix(in srgb, var(--tlb-violet) 45%, transparent);
+}
+
+/* Lightweight hover elevation for other clickable dashboard surfaces
+   (quick action tiles) — no shadow at rest, a small lift on hover. */
+.hover-lift {
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px -16px color-mix(in srgb, var(--tlb-ink) 25%, transparent);
 }
 
 /* Consistent, accessible focus visibility everywhere — buttons, links,
