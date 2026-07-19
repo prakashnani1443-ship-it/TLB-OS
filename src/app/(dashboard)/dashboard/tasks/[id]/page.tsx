@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { IconInbox } from "@/components/ui/icons";
+import { StatusBadge } from "@/components/ui/status-badge";
 import { TaskQuickActions } from "@/components/tasks/task-quick-actions";
 import { createClient } from "@/lib/supabase/server";
 
@@ -99,12 +100,10 @@ export default async function TaskDetailPage({
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-1 border-b border-border pb-6">
         <div className="flex flex-wrap items-center gap-3">
           <h1 className="font-heading text-2xl font-semibold text-foreground">{task.title}</h1>
-          <span className="rounded-full bg-surface-hover px-2.5 py-1 text-xs font-medium text-muted">
-            {statusLabels[task.status] ?? task.status}
-          </span>
+          <StatusBadge status={task.status} label={statusLabels[task.status] ?? task.status} />
           {isOverdue && (
             <span className="rounded-full bg-danger/10 px-2.5 py-1 text-xs font-semibold text-danger">
               Overdue

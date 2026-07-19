@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { IconFolder, IconInbox } from "@/components/ui/icons";
+import { StatusBadge } from "@/components/ui/status-badge";
 import { ProjectQuickActions } from "@/components/projects/project-quick-actions";
 import { TasksList } from "@/components/tasks/tasks-list";
 import { createClient } from "@/lib/supabase/server";
@@ -127,12 +128,13 @@ export default async function ProjectDetailPage({
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-1 border-b border-border pb-6">
         <div className="flex flex-wrap items-center gap-3">
           <h1 className="font-heading text-2xl font-semibold text-foreground">{project.name}</h1>
-          <span className="rounded-full bg-surface-hover px-2.5 py-1 text-xs font-medium text-muted">
-            {statusLabels[project.status] ?? project.status}
-          </span>
+          <StatusBadge
+            status={project.status}
+            label={statusLabels[project.status] ?? project.status}
+          />
         </div>
         <p className="text-sm text-muted">Created {createdDate}</p>
       </div>
@@ -166,18 +168,19 @@ export default async function ProjectDetailPage({
       </Card>
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-5">
-        {summary.map((stat) => (
+        {summary.map((stat, index) => (
           <StatCard
             key={stat.label}
             label={stat.label}
             value={String(stat.value)}
             icon={<IconInbox className="h-5 w-5" />}
+            tone={index % 2 === 0 ? "teal" : "violet"}
           />
         ))}
       </div>
 
       <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-semibold tracking-tight text-foreground">Tasks</h2>
+        <h2 className="font-heading text-lg font-semibold text-foreground">Tasks</h2>
         <TasksList
           tasks={tasks}
           clientOptions={clientOptions}

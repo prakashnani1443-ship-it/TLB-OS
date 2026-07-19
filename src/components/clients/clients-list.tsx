@@ -8,9 +8,16 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { IconUsers } from "@/components/ui/icons";
+import { StatusBadge } from "@/components/ui/status-badge";
 import { EditClientButton } from "@/components/clients/edit-client-button";
 import { DeleteClientButton } from "@/components/clients/delete-client-button";
 import type { Client } from "@/components/clients/types";
+
+const statusLabels: Record<string, string> = {
+  active: "Active",
+  inactive: "Inactive",
+  archived: "Archived",
+};
 
 interface ClientsListProps {
   clients: Client[];
@@ -85,7 +92,7 @@ export function ClientsList({ clients, error }: ClientsListProps) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3 rounded-xl border border-border bg-surface p-3">
         <Input
           value={search}
           onChange={(event) => setSearch(event.target.value)}
@@ -153,9 +160,10 @@ export function ClientsList({ clients, error }: ClientsListProps) {
                     </p>
                   </div>
                   <div className="relative z-10 flex shrink-0 items-center gap-2">
-                    <span className="rounded-full bg-surface-hover px-2.5 py-1 text-xs font-medium text-muted">
-                      {client.status}
-                    </span>
+                    <StatusBadge
+                      status={client.status}
+                      label={statusLabels[client.status] ?? client.status}
+                    />
                     <EditClientButton client={client} />
                     <DeleteClientButton client={client} />
                   </div>

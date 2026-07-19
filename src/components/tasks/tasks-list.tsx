@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { IconInbox } from "@/components/ui/icons";
+import { StatusBadge } from "@/components/ui/status-badge";
 import { EditTaskButton } from "@/components/tasks/edit-task-button";
 import { DeleteTaskButton } from "@/components/tasks/delete-task-button";
 import { cn } from "@/lib/utils";
@@ -214,7 +215,7 @@ export function TasksList({ tasks, clientOptions, projectOptions, error }: Tasks
         aria-label="Search tasks"
         className="w-full sm:max-w-xs"
       />
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-wrap items-center gap-3 rounded-xl border border-border bg-surface p-3">
         <Select
           value={statusFilter}
           onChange={(event) => setStatusFilter(event.target.value)}
@@ -356,9 +357,10 @@ export function TasksList({ tasks, clientOptions, projectOptions, error }: Tasks
                       >
                         {priorityLabels[task.priority] ?? task.priority}
                       </span>
-                      <span className="rounded-full bg-surface-hover px-2.5 py-1 text-xs font-medium text-muted">
-                        {statusLabels[task.status] ?? task.status}
-                      </span>
+                      <StatusBadge
+                        status={task.status}
+                        label={statusLabels[task.status] ?? task.status}
+                      />
                       <EditTaskButton
                         task={task}
                         clientOptions={clientOptions}
